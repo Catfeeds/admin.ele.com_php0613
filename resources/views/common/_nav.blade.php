@@ -1,4 +1,5 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-inverse navbar-static-top" style="border-radius:0;">
+    <div class="container">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -8,19 +9,33 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">myblog</a>
+            <a class="navbar-brand" href="#">ele购物网</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="#">分类管理<span class="sr-only">(current)</span></a></li>
-                <li><a href="/admin">用户管理</a></li>
+                <li><a href="#">首页<span class="sr-only">(current)</span></a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">文章管理 <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">分类管理 <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/article">文章列表</a></li>
-                        <li><a href="/article/create">新增文章</a></li>
+                        <li><a href="/shopCategory">分类列表</a></li>
+                        <li><a href="/shopCategory/create ">新增分类</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家店铺管理<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/shop">店铺列表</a></li>
+                        <li><a href="/shop/create">新增店铺</a></li>
+                        <li><a href="/advantage">店铺优势</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家账号管理<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/user">账号列表</a></li>
+                        <li><a href="/user/create">新增账号</a></li>
                     </ul>
                 </li>
 
@@ -46,19 +61,11 @@
                     </ul>
                 </li>
                @endauth
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">管理员<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{route('admin.login')}}">管理员登录</a></li>
-                        <li><a href="{{route('admin.index')}}">管理员列表</a></li>
-                        <li><a href="{{route('user.list')}}">会员列表</a></li>
-                        <li><a href="{{route('admin.create')}}">新增管理员</a></li>
-                        <li><a href="{{route('admin.logout')}}">退出登陆</a></li>
-                    </ul>
-                </li>
+
 
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
+    </div>
 </nav>
 @include('common._modal_login')
