@@ -1,57 +1,77 @@
 @extends('common.default')
 @section('contents')
-    <div class="col-md-8">
-        <div class="modal-header">
-            <h2 class="text-center">修改个人资料</h2>
+<div class="modal-header">
+    <h2 class="text-center">修改店铺管理员</h2>
+</div>
+<div class="modal-body">
+    <form action="{{ route('user.update',[$user]) }}" method="post" enctype="multipart/form-data">
+        <div class="form-group row ">
+            <label class="col-sm-2 text-right">用户名：</label>
+            <div class="col-sm-8"><input type="text" name="name" class="form-control " value="{{$user->name}}"/></div>
+            <span class="text-danger">{{$errors->first('name')}}</span>
         </div>
-        <div class="modal-body">
-            <form action="{{ route('user.update',[$user]) }}" method="post" enctype="multipart/form-data">
-                <div class="form-group form-group-lg form-inline ">
-                    <label class="col-sm-3 text-right">用户名：</label>
-                    <input type="text" name="name" class="form-control " value="{{$user->name}}"/>
-                    <span class="text-danger">{{$errors->first('name')}}</span>
-                </div>
-                <div class="form-group form-group-lg form-inline">
-                    <label class="col-sm-3 text-right">邮箱：</label>
-                    <input type="text" name="email" class="form-control" value="{{$user->email}}"/>
-                    <span class="text-danger">{{$errors->first('email')}}</span>
-                </div>
-                <div class="form-group form-group-lg form-inline">
-                    <label class="col-sm-3 text-right">电话：</label>
-                    <input type="text" name="tel" disabled="disabled" class="form-control" value="{{$user->tel}}"/>
-                    <span class="text-danger">{{$errors->first('tel')}}</span>
-                </div>
-
-                <div class="form-group form-group-lg form-inline" id="aa" onclick="test()">
-                    <label class="col-sm-3 text-right">上传头像：</label>
-                    <img id="face" src="@if($user->img){{ \Illuminate\Support\Facades\Storage::url($user->img) }}@else /images/a.png @endif" alt="图片上传" height="40" class="form-inline" style="cursor: pointer"/>
-                    <input type="file" name="img" id="file" onchange="preview(this)" style="display: inline-block"/>
-
-                </div>
-
-
-                {{ csrf_field() }}
-                {{method_field('PUT')}}
-                <div class="form-group form-inline">
-                    <label class="col-sm-3"></label>
-                    <input type="submit" value="提交修改" class="btn btn-success btn-lg"/>
-                </div>
-            </form>
+        <div class="form-group row">
+            <label class="col-sm-2 text-right">邮箱：</label>
+            <div class="col-sm-8"><input type="text" name="email" class="form-control" value="{{$user->email}}"/></div>
+            <span class="text-danger">{{$errors->first('email')}}</span>
         </div>
-    </div>
+        <div class="form-group row">
+            <label class="col-sm-2 text-right">电话：</label>
+            <div class="col-sm-8"><input type="text" name="tel" class="form-control" value="{{$user->tel}}"/></div>
+
+        </div>
+
+        <div class="clearfix form-group row">
+            <label class="col-sm-2 text-right">头像：</label>
+            <div class="col-sm-2"><img id="face" src=" @if($user->img){{$user->img}}@else/images/a.png @endif " alt="图片上传" width="80" style="cursor: pointer" onclick="test()"/></div>
+            <div class="col-sm-8">
+                <input type="file" name="img" id="file" onchange="preview(this)"/>
+                <h6>图片格式:jpg、jpeg、png、gif，图片大小不能超过2M</h6>
+                <h5 id="err" class="text-danger"></h5>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 text-right">状态：</label>
+            <div class="col-sm-8"><label class="col-sm-2"><input type="radio" name="status" value="1" checked/>启用</label>
+                <label class="col-sm-2"><input type="radio" name="status" value="0"/>禁用</label></div>
+        </div>
+        <div class="form-group row ">
+            <label class="col-sm-2 text-right">所属店铺：</label>
+            <div class="col-sm-8"> <select name="shop_id" class="form-control">
+                @if(isset($shop))
+                    <option value="{{$shop->id}}">{{$shop->shop_name}}</option>
+                @else
+                    <option value="0">请选择</option>
+                    @foreach($shops as $a)
+                        <option value="{{$a->id}}"
+                        @if($user->shop_id==$a->id) selected @endif>{{$a->shop_name}}</option>
+                    @endforeach
+                @endif
+                </select></div>
+            <span class="text-danger"></span>
+        </div>
+
+        <div class="form-group row">
+
+            <label class="col-sm-2 text-right">验证码：</label>
+            <div class="col-sm-8"><input id="captcha" class="form-control" name="captcha"></div>
+
+            <span class="text-danger">{{$errors->first('captcha')}}</span>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 text-right"></label>
+            <div class="col-sm-8"><img class="captcha" src="{{ captcha_src('flat') }}" onclick="this.src='/captcha/flat?'+Math.random()" title="点击图片重新获取验证码"></div>
+        </div>
+
+        {{ csrf_field() }}
+        {{method_field('PUT')}}
+        <div class="form-group row">
+            <label class="col-sm-2"></label>
+            <div class="col-sm-8"><input type="submit" value="提交修改" class="btn btn-success btn-lg btn-block"/></div>
+        </div>
+    </form>
+</div>
 @endsection
-<script>
-    function test(){
-        var $file = document.getElementById('file');
-        $file.click();
-    }
-    function preview(obj) {
-        //获取input上传的图片数据
-        var file = obj.files[0];
-        //得到bolb对象路径,可当成普通的文件路径一样使用,复制给src;
-        url = window.URL.createObjectURL(file);
-        //预览
-        var face = document.getElementById('face');
-        face.src = url;
-    }
-</script>
+@include('common._img_js')

@@ -34,7 +34,7 @@
 				{{ csrf_field() }}
 				{{method_field('PUT')}}
 				<div class="text-center">
-					<button type="submit" class="btn btn-success btn-lg"> 提交分类 </button>
+					<button type="submit" class="btn btn-success btn-lg"> 提交修改 </button>
 				</div>
 			</form>
 		</div>

@@ -33,7 +33,8 @@ class ImageUploadHandler
         $file->move($upload_path, $filename);
 
         return [
-            'path' => "/$folder_name$filename"
+            'path' => config('app.url')."/$folder_name$filename"  //自动获取图片绝对地址
+            //'path' =>'http://admin.ele.com'. "/$folder_name$filename"  手动单独指定图片地址
         ];
     }
 

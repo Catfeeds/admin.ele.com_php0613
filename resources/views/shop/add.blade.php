@@ -26,9 +26,12 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">店铺优势：</label>
             <div class="col-sm-9">
-                @foreach($advantages as $advantage)
-                <label class="col-md-2"><input type="checkbox" name="advantage[]" value="{{$advantage->value}}"/> {{$advantage->name}}</label>
-                 @endforeach
+                <label class="col-md-2"><input type="checkbox" name="brand" value="1" @if(old('brand')) checked="checked"  @endif/>  品牌</label>
+                <label class="col-md-2"><input type="checkbox" name="on_time" value="1" @if(old('on_time')) checked="checked"  @endif/>  准时送达</label>
+                <label class="col-md-2"><input type="checkbox" name="fengniao" value="1" @if(old('fengniao')) checked="checked"  @endif/>  蜂鸟配送</label>
+                <label class="col-md-2"><input type="checkbox" name="bao" value="1" @if(old('bao')) checked="checked"  @endif/>  保标记</label>
+                <label class="col-md-2"><input type="checkbox" name="piao" value="1" @if(old('piao')) checked="checked"  @endif/>  票标记</label>
+                <label class="col-md-2"><input type="checkbox" name="zhun" value="1" @if(old('zhun')) checked="checked"  @endif/>  准标记</label>
             </div>
         </div>
         <div class="form-group">
@@ -74,7 +77,7 @@
             <div class="col-sm-8"><input type="text" name="discount" class="form-control" value="{{old('shop_name')}}"/></div>
         </div>
         <div class="clearfix form-group">
-            <label class="control-label col-sm-2">分类图片：</label>
+            <label class="control-label col-sm-2">店铺图片：</label>
             <div class="col-sm-2"><img id="face" src="/images/a.png" alt="图片上传" width="100" style="cursor: pointer" onclick="test()" /></div>
             <div class="col-sm-8">
                 <input type="file" name="img" id="file" onchange="preview(this)"/>
@@ -87,7 +90,7 @@
         <div class="form-group">
             <label class="col-sm-2"></label>
             <div class="col-sm-8">
-            <button type="submit" class="btn-success btn-lg btn-block"> 提交分类</button>
+            <button type="submit" class="btn-success btn-lg btn-block"> 立即新增</button>
             </div>
         </div>
     </form>

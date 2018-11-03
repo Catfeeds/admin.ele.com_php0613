@@ -7,5 +7,6 @@
     <title>ele购物网站</title>
     <!-- Bootstrap -->
     <link href="/css/bootstrap.css" rel="stylesheet">
+    <script src="/js/jquery.min.js"></script>
 </head>
 <body>

@@ -28,7 +28,6 @@
                     <ul class="dropdown-menu">
                         <li><a href="/shop">店铺列表</a></li>
                         <li><a href="/shop/create">新增店铺</a></li>
-                        <li><a href="/advantage">店铺优势</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -38,14 +37,22 @@
                         <li><a href="/user/create">新增账号</a></li>
                     </ul>
                 </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">活动管理<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/activity">活动列表</a></li>
+                        <li><a href="/activity/create">添加活动</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">会员管理<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/member">会员列表</a></li>
+                        <li><a href="/member/create">会员活动</a></li>
+                    </ul>
+                </li>
 
             </ul>
-            <form class="navbar-form navbar-left">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
-                </div>
-                <button type="submit" class="btn btn-default">Submit</button>
-            </form>
             <ul class="nav navbar-nav navbar-right">
                 @guest
                 <li><a href="#" data-toggle="modal" data-target="#login">登陆</a></li>
@@ -55,8 +62,9 @@
                 <li class="dropdown">
                     <a href="{{route('user.index')}}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{auth()->user()->name}}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="{{route('user.index',[auth()->user()])}}">用户中心</a></li>
-                        <li><a href="#">修改密码</a></li>
+                        <li><a href="{{route('admin.index',[auth()->user()])}}">管理员列表</a></li>
+                        <li><a href="{{route('admin.create',[auth()->user()])}}">添加管理员</a></li>
+                        <li><a href="{{route('admin.show',[auth()->user()])}}">修改密码</a></li>
                         <li><a href="{{route('logout')}}">退出登陆</a></li>
                     </ul>
                 </li>
