@@ -33,8 +33,8 @@
 
         <div class="form-group row">
             <label class="col-sm-2 text-right">状态：</label>
-            <div class="col-sm-8"><label class="col-sm-2"><input type="radio" name="status" value="1" checked/>启用</label>
-                <label class="col-sm-2"><input type="radio" name="status" value="0"/>禁用</label></div>
+            <div class="col-sm-8"><label class="col-sm-2"><input type="radio" name="status" value="1" @if($user->status==1)checked @endif/>启用</label>
+                <label class="col-sm-2"><input type="radio" name="status" value="0" @if($user->status==0)checked @endif/>禁用</label></div>
         </div>
         <div class="form-group row ">
             <label class="col-sm-2 text-right">所属店铺：</label>
@@ -52,18 +52,15 @@
             <span class="text-danger"></span>
         </div>
 
-        <div class="form-group row">
-
-            <label class="col-sm-2 text-right">验证码：</label>
-            <div class="col-sm-8"><input id="captcha" class="form-control" name="captcha"></div>
-
-            <span class="text-danger">{{$errors->first('captcha')}}</span>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-2 text-right"></label>
-            <div class="col-sm-8"><img class="captcha" src="{{ captcha_src('flat') }}" onclick="this.src='/captcha/flat?'+Math.random()" title="点击图片重新获取验证码"></div>
-        </div>
+        {{--<div class="form-group row">--}}
+            {{--<label class="col-sm-2 text-right">验证码：</label>--}}
+            {{--<div class="col-sm-8"><input id="captcha" class="form-control" name="captcha"></div>--}}
+            {{--<span class="text-danger">{{$errors->first('captcha')}}</span>--}}
+        {{--</div>--}}
+        {{--<div class="form-group row">--}}
+            {{--<label class="col-sm-2 text-right"></label>--}}
+            {{--<div class="col-sm-8"><img class="captcha" src="{{ captcha_src('flat') }}" onclick="this.src='/captcha/flat?'+Math.random()" title="点击图片重新获取验证码"></div>--}}
+        {{--</div>--}}
 
         {{ csrf_field() }}
         {{method_field('PUT')}}

@@ -6,6 +6,8 @@ use App\Model\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
@@ -16,12 +18,22 @@ class AdminController extends Controller
     }
     //新增
     public function create(){
-        return view('admin.add');
+        //用户权限验证
+        if(!Auth::user()->can('admin.create')){
+            return view('error.noPermission');
+        }
+        //查询出角色
+        $roles=Role::all();
+        return view('admin.add',compact('roles'));
     }
     public  function store(Request $request){
+        //用户权限验证
+        if(!Auth::user()->can('admin.create')){
+            return view('error.noPermission');
+        }
         //验证数据
-        $res=$this->validate($request,[
-            'name' => 'required|min:3|max:20',
+        $this->validate($request,[
+            'name' => 'required|min:3|max:20|unique:admins',
             'email' => 'email|unique:admins',
             'password' => [
                 'required',
@@ -29,47 +41,67 @@ class AdminController extends Controller
                 'confirmed'
             ],
             'password_confirmation' => 'required|same:password',
-            'captcha' => 'required|captcha'
+            'role'=>'required',
         ],[
             'name.required' => '用户名不能为空',
             'name.min' => '用户名不能少于三位',
             'name.max' => '用户名不能多于20位',
+            'name.unique' => '用户名已存在',
             'email.email' => '邮箱格式不正确',
             'email.unique' => '此邮箱已存在',
             'password.required' => '请输入密码',
             'password.regex' => '6-16为密码.可以是数字,字母或下划线',
             'password.confirmed' => "密码与确认密码不匹配",
-            'captcha.required' => '请输入验证码',
-            'captcha.captcha' => '验证码不正确',
             'password_confirmation.required' => "确认密码不能为空",
             'password_confirmation.same' => '',
+            'role.required'=>'请选择用户角色',
         ]);
-        if($res==false){ return back()->withInput();}
-        Admin::create([
+
+        $admin=Admin::create([
             'name'=>$request->name,
             'email'=>$request->email,
             'password'=>bcrypt($request->password),
         ]);
+
+        //给admin 添加赋予角色
+        $admin->assignRole($request->role);
         return redirect()->route('admin.index')->with('success','管理员添加成功!');
     }
     //修改
     public function edit(Admin $admin){
-        return view('admin.edit',compact('admin'));
+        //用户权限验证
+        if(!Auth::user()->can('admin.edit')){
+            return view('error.noPermission');
+        }
+        //查询出角色
+        $roles=Role::all();
+        return view('admin.edit',compact('admin','roles'));
     }
     public function update(Admin $admin,Request $request){
+        //用户权限验证
+        if(!Auth::user()->can('admin.edit')){
+            return view('error.noPermission');
+        }
         //验证
-        if($this->validate($request,[
+        $this->validate($request,[
             'email' => 'email',],[
             'email.email' => '邮箱格式不正确',
-        ])){ return back()->withInput(); };
+        ]);
         $admin->update([
             'email'=>$request->email,
         ]);
+        //这个地方有bug,没有权限管理员修改自己的资料时权限会重置
+        //更新角色
+        $admin->syncRoles($request->role);
         return redirect()->route('admin.index')->with('success','管理员修改成功!');
     }
 
     //删除
     public function destroy(Admin $admin){
+        //用户权限验证
+        if(!Auth::user()->can('admin.destroy')){
+            return view('error.noPermission');
+        }
         $admin->delete();
         return redirect()->route('admin.index')->with('success','删除成功');
     }

@@ -11,7 +11,7 @@ class LoginController extends Controller
 
     //用户登录
     public function login(){
-        return view('admin/login');
+        return view('/login');
     }
     public function store(Request $request){
         if(Auth::attempt(['name'=>$request->name,'password'=>$request->password],$request->has('remember'))){
@@ -25,7 +25,7 @@ class LoginController extends Controller
     //退出登陆
     public function destroy(){
         Auth::logout();
-        return redirect('/')->with('success','您已成功退出登陆');
+        return redirect('/login')->with('success','您已成功退出登陆');
 
     }
 

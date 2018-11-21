@@ -4,14 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Model\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ActivityController extends Controller
 {
     //创建
     public function create(){
+        //用户权限验证
+        if(!Auth::user()->can('activity.create')){
+            return view('error.noPermission');
+        }
         return view('activity.add');
     }
     public function store(Request $request){
+        //用户权限验证
+        if(!Auth::user()->can('activity.create')){
+            return view('error.noPermission');
+        }
         //验证数据
         $this->validate($request,[
             'title'=>'required',
@@ -54,9 +63,17 @@ class ActivityController extends Controller
 
     //修改
     public function edit(Activity $activity){
+        //用户权限验证
+        if(!Auth::user()->can('activity.edit')){
+            return view('error.noPermission');
+        }
         return view('Activity.edit',compact('activity'));
     }
     public function update(Activity $activity,Request $request){
+        //用户权限验证
+        if(!Auth::user()->can('activity.edit')){
+            return view('error.noPermission');
+        }
     //验证数据
     $this->validate($request,[
         'title'=>'required',
@@ -74,6 +91,10 @@ class ActivityController extends Controller
     }
     //删除
     public function destroy(Activity $activity){
+        //用户权限验证
+        if(!Auth::user()->can('activity.destroy')){
+            return view('error.noPermission');
+        }
         $activity->delete();
         return 'success';
     }

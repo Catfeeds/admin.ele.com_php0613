@@ -14,9 +14,5 @@ class Shop extends Model
         return $this->belongsTo(ShopCategory::class);
     }
 
-    //1对多
-    public function advantage()
-    {
-        return $this->hasMany(Advantage::class);
-    }
+
 }

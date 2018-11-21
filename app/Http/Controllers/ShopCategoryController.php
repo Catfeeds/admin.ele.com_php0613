@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\ShopCategory;
 use Illuminate\Http\Request;
 use App\Handlers\ImageUploadHandler;
+use Illuminate\Support\Facades\Auth;
 
 class ShopCategoryController extends Controller
 {
@@ -18,19 +19,26 @@ class ShopCategoryController extends Controller
     public function show(){}
     //新增
     public function create(){
+        //用户权限验证
+        if(!Auth::user()->can('shopCategory.create')){
+            return view('error.noPermission');
+        }
         return view('shopCategory.add');
     }
     public function store(Request $request,ImageUploadHandler $uploader){
-
-       //验证数据
-       if($this->validate($request,[
+        //用户权限验证
+        if(!Auth::user()->can('shopCategory.create')){
+            return view('error.noPermission');
+        }
+        //验证数据
+        if($this->validate($request,[
            'name'=>'required|min:2|unique:shop_categories',
-       ],['name.required'=>'分类名不能为空',
+        ],['name.required'=>'分类名不能为空',
            'name.min'=>'分类名不能少于2个字',
             'name.unique'=>'分类名已存在',
            ])==false){
            return back()->withInput();
-       }
+        }
         //接收图片 保存图片 shopCategory文件夹名 shopcate图片文件名
         if ($request->img) {
             $result = $uploader->save($request->img, 'shopCategory','shopcate');
@@ -47,9 +55,17 @@ class ShopCategoryController extends Controller
     }
     //修改
     public function edit(ShopCategory $shopCategory){
+        //用户权限验证
+        if(!Auth::user()->can('shopCategory.edit')){
+            return view('error.noPermission');
+        }
         return view('shopCategory.edit',compact('shopCategory'));
     }
     public function update(ShopCategory $shopCategory,Request $request,ImageUploadHandler $uploader){
+        //用户权限验证
+        if(!Auth::user()->can('shopCategory.edit')){
+            return view('error.noPermission');
+        }
         //验证数据
         if($this->validate($request,[
                 'name'=>'required|min:2',
@@ -79,8 +95,6 @@ class ShopCategoryController extends Controller
                 'status'=>$request->status,
             ]);
         }
-
-
         return redirect()->route('shopCategory.index')->with('success','分类'.$request->name.'修改成功');
 
     }
@@ -88,6 +102,10 @@ class ShopCategoryController extends Controller
     //删除
     public function destroy(ShopCategory $shopCategory)
     {
+        //用户权限验证
+        if(!Auth::user()->can('shopCategory.destroy')){
+            return view('error.noPermission');
+        }
         $shopCategory->delete();
         return redirect()->route('shopCategory.index')->with('success','删除成功');
     }

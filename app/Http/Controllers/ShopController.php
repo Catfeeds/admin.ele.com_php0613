@@ -8,6 +8,7 @@ use App\Model\ShopCategory;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ShopController extends Controller
 {
@@ -43,6 +44,10 @@ class ShopController extends Controller
 
     //店铺通过审核,同时所属账号也通过审核
     public function audited(Shop $shop){
+        //用户权限验证
+        if(!Auth::user()->can('shop.audited')){
+            return view('error.noPermission');
+        }
         DB::transaction(function() use($shop) {
             $shop->update([
                 'status' => 1,
@@ -55,6 +60,10 @@ class ShopController extends Controller
     }
     //关闭店铺同时禁用所有账号
     public function close(Shop $shop){
+        //用户权限验证
+        if(!Auth::user()->can('shop.close')){
+            return view('error.noPermission');
+        }
         DB::transaction(function() use($shop) {
             $shop->update([
                 'status' => -1,
@@ -76,13 +85,21 @@ class ShopController extends Controller
     public function show(Shop $shop){
         return view('shop.show',compact('shop'));
     }
-    //新增
+    //新增 添加店铺的同时添加店铺账号
     public function create(){
+        //用户权限验证
+        if(!Auth::user()->can('shop.create')){
+            return view('error.noPermission');
+        }
         //获取店铺分类
         $cates=ShopCategory::all()->where('status',1);
         return view('shop.add',['cates'=>$cates]);
     }
     public function store(Request $request,ImageUploadHandler $uploader){
+        //用户权限验证
+        if(!Auth::user()->can('shop.create')){
+            return view('error.noPermission');
+        }
         //验证数据
         if($this->validate($request,[
                 'shop_name'=>'required|unique:shops',
@@ -94,15 +111,21 @@ class ShopController extends Controller
             ])==false){
             return back()->withInput();
         }
-
-        //接收图片 保存图片 shopCategory文件夹名 shopcate图片文件名
-        if ($request->img) {
-            $result = $uploader->save($request->img, 'shop','shoplogo');
-            if ($result) {
-                $path = $result['path'];
-            }
-        }else{$path='';}
-        $shop=Shop::create([
+        //保存店铺图片
+        $path1='';
+        $path2='';
+        if ($request->img1) {
+            $result = $uploader->save($request->img1, 'shop','shoplogo');
+            if ($result) { $path1 = $result['path']; }
+        }
+        //保存账号图片
+        if ($request->img2) {
+            $result = $uploader->save($request->img2, 'shop','shoplogo');
+            if ($result) { $path2 = $result['path']; }
+        }
+        //开启事务
+        DB::beginTransaction();
+        $sql1=DB::table('shops')->insertGetId([
             'shop_category_id'=>$request->shop_category_id,
             'shop_name'=>$request->shop_name,
             'start_send'=>$request->start_send ?? '0',
@@ -110,7 +133,7 @@ class ShopController extends Controller
             'status'=>$request->status,
             'notice'=>$request->notice,
             'discount'=>$request->discount,
-            'shop_img'=>$path,
+            'shop_img'=>$path1,
             'brand'=>$request->brand ?? 0,
             'on_time'=>$request->on_time ?? 0,
             'fengniao'=>$request->fengniao ?? 0,
@@ -118,19 +141,40 @@ class ShopController extends Controller
             'piao'=>$request->piao ?? 0,
             'zhun'=>$request->zhun ?? 0,
         ]);
-        return redirect()->route('user.add',['shop'=>$shop])->with('success','店铺'.$request->name.'添加成功');
+        $sql2=DB::table('users')->insert([
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'tel'=>$request->tel,
+            'password'=>bcrypt($request->password),
+            'shop_id'=>$sql1,
+            'status'=>1, //平台添加的商户默认启用
+            'img'=>$path2,
+        ]);
+        if($sql1 && $sql2){
+            DB::commit();
+            return redirect()->route('shop.index')->with('success','店铺'.$request->name.'添加成功');
+        }else{
+            DB::rollBack();
+            return back()->with('danger','店铺添加失败!')->withInput();
+        }
+
     }
-    //注册店铺时添加
-    public function add(shop $shop){
-        return view('user.add',compact('shop'));
-    }
+
     //修改
     public function edit(Shop $shop){
+        //用户权限验证
+        if(!Auth::user()->can('shop.edit')){
+            return view('error.noPermission');
+        }
         //获取店铺分类
         $cates=ShopCategory::all()->where('status',1);
         return view('shop.edit',compact('shop'),['cates'=>$cates]);
     }
     public function update(Shop $shop,Request $request,ImageUploadHandler $uploader){
+        //用户权限验证
+        if(!Auth::user()->can('shop.edit')){
+            return view('error.noPermission');
+        }
         //验证数据
         if($this->validate($request,[
                 'shop_name'=>'required',
@@ -191,6 +235,10 @@ class ShopController extends Controller
     //删除
     public function destroy(Shop $shop)
     {
+        //用户权限验证
+        if(!Auth::user()->can('shop.destroy')){
+            return view('error.noPermission');
+        }
         $shop->delete();
         return 'success';
     }

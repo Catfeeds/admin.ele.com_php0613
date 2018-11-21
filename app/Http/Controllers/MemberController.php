@@ -5,14 +5,23 @@ namespace App\Http\Controllers;
 use App\Handlers\ImageUploadHandler;
 use App\Model\Member;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MemberController extends Controller
 {
     //新增
     public function create(){
+        //用户权限验证
+        if(!Auth::user()->can('member.create')){
+            return view('error.noPermission');
+        }
       return view('member.add');
     }
     public function store(Request $request,ImageUploadHandler $uploader){
+        //用户权限验证
+        if(!Auth::user()->can('member.create')){
+            return view('error.noPermission');
+        }
         //验证数据
         $this->validate($request,[
             'username' => 'required|min:3|max:20',
@@ -60,10 +69,17 @@ class MemberController extends Controller
     }
     //修改
     public function edit(Member $member){
+        //用户权限验证
+        if(!Auth::user()->can('member.edit')){
+            return view('error.noPermission');
+        }
         return view('member.edit',compact('member'));
     }
     public function update(Member $member,Request $request,ImageUploadHandler $uploader){
-
+        //用户权限验证
+        if(!Auth::user()->can('member.edit')){
+            return view('error.noPermission');
+        }
         //验证数据
         $this->validate($request, [
             'username' => 'required|min:3|max:20',
@@ -122,6 +138,10 @@ class MemberController extends Controller
     }
     //重置密码
     public function resetPassword(Member $member){
+        //用户权限验证
+        if(!Auth::user()->can('member.resetPassword')){
+            return view('error.noPermission');
+        }
         $string = str_random(6);
         $member->update([
             'password'=>bcrypt($string),

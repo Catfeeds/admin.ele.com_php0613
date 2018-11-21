@@ -2,7 +2,7 @@
 @section('contents')
     <div class="modal-header">
         <h4 class="pull-left">商家店铺列表 </h4>
-        <a href="{{route('shop.create')}}" class="btn btn-success pull-right">添加店铺</a>
+        @can('shop.create')<a href="{{route('shop.create')}}" class="btn btn-success pull-right">添加店铺</a>@endcan
     </div>
     <div class="modal-body clearfix" style="padding: 15px 0px;">
         <form action="{{route('shop.index')}}" method="get" class="form-inline pull-left">
@@ -37,7 +37,7 @@
         @foreach ($shops as $shop)
             <tr>
                 <td>{{$shop->id}}</td>
-                <td>{{$shop->shop_name}}</td>
+                <td><h4><a href="{{ route('shop.show',[$shop]) }}">{{$shop->shop_name}}</a></h4></td>
                 <td>@if($shop->shop_img)<img src="{{$shop->shop_img}}" height="50"/>@endif</td>
                 <td>{{$shop->shopCategory->name}}</td>
                 <td>{{$shop->shop_rating}}</td>
@@ -54,9 +54,8 @@
                         <a href="{{ route('shop.show',[$shop]) }}" class="btn btn-default btn-sm">查看</a>
 
                     @endif
-                    <a href="{{ route('shop.edit',[$shop]) }}" class="btn btn-success btn-sm">修改</a>
-                    <a href="javascript:;" data-href="{{route('shop.destroy',[$shop])}}" class="del_btn btn btn-warning btn-sm">删除</a>
-
+                    @can('shop.edit')<a href="{{ route('shop.edit',[$shop]) }}" class="btn btn-success btn-sm">修改</a>@endcan
+                    @can('shop.destroy')<a href="javascript:;" data-href="{{route('shop.destroy',[$shop])}}" class="del_btn btn btn-warning btn-sm">删除</a>@endcan
                 </td>
             </tr>
         @endforeach

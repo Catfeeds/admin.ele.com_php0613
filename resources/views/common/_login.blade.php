@@ -3,7 +3,7 @@
 
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h2 class="text-center" >用户登录</h2>
+                <h2 class="text-center" >后台管理员登录</h2>
 
             </div>
             <div class="modal-body">

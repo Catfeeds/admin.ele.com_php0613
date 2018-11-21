@@ -2,10 +2,8 @@
 @section('contents')
     <div class="clearfix">
         <h4 class="pull-left">商家分类列表 </h4>
-        <a href="{{route('shopCategory.create')}}" class="btn btn-success pull-right">添加分类</a>
+        @can('shopCategory.create')<a href="{{route('shopCategory.create')}}" class="btn btn-success pull-right">添加分类</a>@endcan
     </div>
-
-
     <table class="table table-hover table-bordered text-center" >
         <thead>
         <tr class="active">
@@ -27,13 +25,8 @@
                     @if($shopCategory->status==0)隐藏 @endif
                 </td>
                 <td>
-                    <a href="{{ route('shopCategory.edit',[$shopCategory]) }}" class="btn btn-success btn-sm">修改</a>
-
-                    <form method="post" action="{{route('shopCategory.destroy',[$shopCategory])}}" style="display: inline">
-                        {{ csrf_field() }}
-                        {{ method_field('DELETE') }}
-                        <button class="btn btn-warning btn-sm" onclick="return confirm('你确定要删除吗')">删除</button>
-                    </form>
+                    @can('shopCategory.edit')<a href="{{ route('shopCategory.edit',[$shopCategory]) }}" class="btn btn-success btn-sm">修改</a>@endcan
+                    @can('shopCategory.destroy')<a href="javascript:;" data-href="{{route('shopCategory.destroy',[$shopCategory])}}" class="del_btn btn btn-warning btn-sm">删除</a>@endcan
                 </td>
             </tr>
         @endforeach
@@ -41,5 +34,7 @@
     </table>
     <!-- 分页 -->
     {{ $shopCategorys->links() }}
+    <!--加载删除的js-->
+    @include('common._del_btn_js')
 
 @endsection
